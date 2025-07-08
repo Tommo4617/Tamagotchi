@@ -9,14 +9,14 @@ namespace Tamagotchi_project
 {
     internal class AccessDBData
     {
-        private string connectionString = "Data Source=TamagotchiDB.db;Version=3;";
+        private string connectionString = $@"Data Source={AppDomain.CurrentDomain.BaseDirectory}TamagotchiDB.db;Version=3;";
+
         public void AddUser(string name, string password)
         {
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 string InsertNewUser = "INSERT INTO User (Username, Password, Piggybank) VALUES (@name, @password, @piggybank)";
                 connection.Open();
-                Console.WriteLine("COnnection made!");
                 using (SQLiteCommand newUserCommand = new SQLiteCommand(InsertNewUser, connection)) {
                     newUserCommand.Parameters.AddWithValue("@name", name);
                     newUserCommand.Parameters.AddWithValue("@password", password);
@@ -26,6 +26,34 @@ namespace Tamagotchi_project
                 }
           
                 connection.Close();
+
+            }
+        }
+
+        public bool CheckValidLogin(string name, string password)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                string validateLogin = "SELECT * FROM User WHERE Username = @name AND Password = @password";
+                connection.Open();
+                using (SQLiteCommand loginCommand = new SQLiteCommand(validateLogin, connection))
+                {
+                    loginCommand.Parameters.AddWithValue("@name", name);
+                    loginCommand.Parameters.AddWithValue("@password", password);
+                    using (SQLiteDataReader reader = loginCommand.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            Console.WriteLine("Login successful!");
+                            return true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid username or password.");
+                            return false;
+                        }
+                    }
+                }
 
             }
         }
