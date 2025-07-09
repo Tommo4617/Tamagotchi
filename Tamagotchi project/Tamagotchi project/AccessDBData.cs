@@ -30,6 +30,25 @@ namespace Tamagotchi_project
             }
         }
 
+        public void AddPet(string name, string species)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                string makeNewPet = "INSERT INTO PET (PetName, Species, Level, Hunger, Happiness) VALUES (@name, @species, @level, @hunger, @happiness)";
+                connection.Open();
+                using (SQLiteCommand newPetCommand = new SQLiteCommand(makeNewPet, connection))
+                {
+                    newPetCommand.Parameters.AddWithValue("@name", name);
+                    newPetCommand.Parameters.AddWithValue("@species", species);
+                    newPetCommand.Parameters.AddWithValue("@level", 0);
+                    newPetCommand.Parameters.AddWithValue("@hunger", 100);
+                    newPetCommand.Parameters.AddWithValue("@happiness", 100);
+                    newPetCommand.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+
         public bool CheckValidLogin(string name, string password)
         {
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))

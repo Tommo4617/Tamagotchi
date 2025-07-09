@@ -9,7 +9,6 @@ namespace Tamagotchi_project
     abstract class Pet
     {
         protected abstract string name { get; set; }
-        protected abstract string species { get; set; }
         protected abstract string favouriteFood { get; set; }
         protected abstract string favouriteToy { get; set; }
 
